@@ -1,0 +1,49 @@
+@import "../styles.scss";
+.header {
+  margin-top: 3rem;
+}
+
+.header__logo {
+  cursor: pointer;
+}
+
+.header__logo,
+.footer__logo {
+  display: flex;
+  justify-content: center;
+
+  & .brand__name {
+    font-size: 2rem;
+    font-weight: 900;
+    color: $brand-light;
+  }
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+}
+
+.footer {
+  padding-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer__logo {
+  & img {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  & .brand__name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $brand-light;
+  }
+
+  & .powered__by {
+    font-size: 1.1rem;
+    color: $light-grey-hue;
+    font-weight: 700;
+  }
+}

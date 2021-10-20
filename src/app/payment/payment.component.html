@@ -1,0 +1,62 @@
+<div class="amount__pay">
+    <img src="../../assets/images/indian.svg" alt="Rupee">
+    <div>Amount To Pay: $ {{orderDetails?.amount}}</div>
+</div>
+<div class="container">
+    <div class="main">
+        <div class="upi__label">
+            Pay Using UPI Apps
+        </div>
+        <div *ngIf="DEVICE_TYPE.ANDROID || DEVICE_TYPE.IOS" class="pay__btn" (click)="onUpiPay('phonePe')">
+            <img src="../../assets/images/PhonePe_Logo_Svg_vfqcs9.svg" alt="">
+            <div class="pay__btn-label">
+                Phone Pe
+            </div>
+        </div>
+        <div *ngIf="DEVICE_TYPE.ANDROID || DEVICE_TYPE.IOS" class="pay__btn" (click)="onUpiPay('googlePay')">
+            <img src="../../assets/images/google-pay-Logo-PNG_awihaa.png" alt="">
+            <div class="pay__btn-label">
+                Google Pay
+            </div>
+        </div>
+        <div *ngIf="DEVICE_TYPE.ANDROID" class="pay__btn" (click)="onUpiPay('paytm')">
+            <img src="../../assets/images/Paytm_Cricle_Logo_PNG_phfvdx.svg" alt="">
+            <div class="pay__btn-label">
+                Paytm
+            </div>
+        </div>
+        <div *ngIf="DEVICE_TYPE.ANDROID" class="pay__btn" (click)="onUpiPay('bhim')">
+            <img src="../../assets/images/Bhim_Icon_iszgpn.png" alt="">
+            <div class="pay__btn-label">
+                BHIM
+            </div>
+        </div>
+        <div *ngIf="!DEVICE_TYPE.ANDROID && !DEVICE_TYPE.IOS" class="no-payment-option">
+            <span>No Payment Option Available On This Device</span>
+        </div>
+        <div class="ruler">
+            <span>OR</span>
+        </div>
+        <div class="upi__label">
+            Get Payment Link
+        </div>
+        <div class="pay__link-label">
+            You will get a payment link on
+        </div>
+        <div class="mobile__input">
+            <input type="tel" [(ngModel)]="smsMobile"
+                placeholder="{{userDetails?.phone ? userDetails?.phone : 'Mobile Number'}}" name="mobile"
+                pattern="^([0|\+[0-9]{1,5})?([7-9][0-9]{9})$" required>
+            <button type="submit" [disabled]="!userDetails?.phone && !smsMobile" (click)="onSmsPay()">Send</button>
+        </div>
+    </div>
+</div>
+<div class="whatsapp__sms-btn">
+    <div class="upi__label">
+        Get WhatsApp and SMS Updates
+    </div>
+    <div class="pay__link-label">
+        click on this to turn off updates
+        <input type="checkbox" id="whatsapp-updates" checked>
+    </div>
+</div>
