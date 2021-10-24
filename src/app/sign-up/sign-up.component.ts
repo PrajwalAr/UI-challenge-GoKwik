@@ -11,10 +11,6 @@ import { OrderDetailsService } from '../services/order-details.service';
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent implements OnInit {
-  userName: string;
-  userEmail: string;
-  userMobile: number;
-  userAddress: string;
   constructor(
     private orderDetailsService: OrderDetailsService,
     private router: Router
@@ -27,7 +23,6 @@ export class SignUpComponent implements OnInit {
       ...formData.value,
     };
     const orderDetails: OrderDetails = {
-      // since i couldn't find the flow for COD , i have made the deafult Payment type as UPI for now.
       orderType: 'UPI',
       amount: Math.floor(Math.random() * 1000),
     };
