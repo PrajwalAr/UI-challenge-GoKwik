@@ -5,21 +5,15 @@ import { OrderDetails } from '../models/orderDetails';
 import { UserDetails } from '../models/userDetails';
 import { OrderDetailsService } from '../services/order-details.service';
 
-enum ORDER {
-  USER_DETAILS,
-  ORDER_DETAILS,
-}
-
 @Component({
   selector: 'app-payment',
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
 })
-export class PaymentComponent implements OnInit, OnDestroy {
+export class PaymentComponent implements OnInit {
   public userDetails: UserDetails;
   public orderDetails: OrderDetails;
   public smsMobile: number;
-  private orderDetailsSubscription: Subscription;
   public DEVICE_TYPE = {
     // goes inside static.config
     ANDROID: true,
@@ -29,50 +23,59 @@ export class PaymentComponent implements OnInit, OnDestroy {
   constructor(
     private orderDetailsService: OrderDetailsService,
     private router: Router
-  ) {
-    this.orderDetailsSubscription = this.orderDetailsService // Idealy should be fetched by router's resolver
-      .getUserOrderDetails() // considering the scale of application, i have made use of RXJS Replay subject instead
-      .subscribe((userOrderDetails) => {
-        this.userDetails = {
-          ...userOrderDetails[ORDER.USER_DETAILS],
-        };
-        this.orderDetails = {
-          ...userOrderDetails[ORDER.ORDER_DETAILS],
-        };
-      });
-  }
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    [this.userDetails, this.orderDetails] =
+      this.orderDetailsService.getUserOrderDetails();
+  }
 
   onUpiPay(upiType: string): void {
     if (!this.userDetails?.name) {
-      this.paymentSuccessFlow(false);
+      this.paymentSuccess(false);
     } else {
-      this.orderDetailsService.setUpiMethod(upiType);
-      this.paymentSuccessFlow(true);
+      this.orderDetailsService.setUpiMethod(upiType).subscribe(
+        (response) => {
+          console.log(response);
+          this.paymentSuccess(true);
+        },
+        (error) => {
+          console.log(error);
+          this.paymentSuccess(true); //calling Payment Success irespective of Payment resp from dummy server.
+        }
+      );
     }
   }
 
   onSmsPay(): void {
-    if (!this.smsMobile && !this.userDetails.phone) {
-      this.paymentSuccessFlow(false);
+    if (
+      (!this.smsMobile && !this.userDetails.phone) ||
+      !this.orderDetails.amount
+    ) {
+      this.paymentSuccess(false);
     } else {
       const requestDetails = {
         mobile: this.smsMobile ? this.smsMobile : this.userDetails.phone,
         amount: this.orderDetails.amount,
       };
-      this.orderDetailsService.sendUpiRequestOnMessage(requestDetails);
-      this.paymentSuccessFlow(true);
+      this.orderDetailsService
+        .sendUpiRequestOnMessage(requestDetails)
+        .subscribe(
+          (response) => {
+            console.log(response);
+            this.paymentSuccess(true);
+          },
+          (error) => {
+            console.log(error);
+            this.paymentSuccess(true); //calling Payment Success irespective of Payment resp from dummy server.
+          }
+        );
     }
   }
 
-  paymentSuccessFlow(success: boolean): void {
+  private paymentSuccess(success: boolean): void {
     success
       ? this.router.navigate(['/paymentComplete'])
       : this.router.navigate(['']);
-  }
-
-  ngOnDestroy() {
-    this.orderDetailsSubscription.unsubscribe();
   }
 }

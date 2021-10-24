@@ -8,6 +8,7 @@ import { PaymentComponent } from './payment/payment.component';
 import { OrderCompleteComponent } from './order-complete/order-complete.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,15 @@ import { HttpClientModule } from '@angular/common/http';
     PaymentComponent,
     OrderCompleteComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    BackButtonDisableModule.forRoot({
+      preserveScrollPosition: true,
+    }),
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
